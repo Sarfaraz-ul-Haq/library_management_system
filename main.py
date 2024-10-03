@@ -22,3 +22,35 @@ class Book:
 
     def display_available(self) -> None:
         print(self._available)
+
+
+class User:
+    def __init__(self, user_id: str, name: str, email: str) -> None:
+        self._user_id: str = user_id
+        self._name: str = name
+        self._email: str = email
+
+
+class Librarian(User):
+    def __init__(self, user_id: str, name: str, email: str) -> None:
+        super().__init__(user_id, name, email)
+
+    def add_book() -> None:
+        pass
+
+    def update_book() -> None:
+        pass
+
+    def delete_book() -> None:
+        pass
+
+
+class Member(User):
+    def __init__(self, user_id: str, name: str, email: str) -> None:
+        super().__init__(user_id, name, email)
+
+    def borrow_book() -> None:
+        pass
+
+    def return_book() -> None:
+        pass
