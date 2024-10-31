@@ -1,3 +1,6 @@
+from typing import List
+
+
 class Book:
     def __init__(self, book_id: int, title: str, author: str) -> None:
         self._book_id: int = book_id
@@ -54,3 +57,40 @@ class Member(User):
 
     def return_book() -> None:
         pass
+
+
+class LibraryManager:
+    def __init__(self) -> None:
+        self.books: List[Book] = []
+        self.users: List[User] = []
+        # self.load_books()
+        # self.load_users()
+
+    # def update_book() -> None:
+    #     pass
+
+    # def delete_book() -> None:
+    #     pass
+
+    # def borrow_book() -> None:
+    #     pass
+
+    # def return_book() -> None:
+    #     pass
+
+    def load_books(self):
+        try:
+            with open("books.txt", "r") as file:
+                for line in file:
+                    book_id, title, author, available = line.strip().split(",")
+                    self.books.append(Book(book_id, title, author))
+        except OSError:
+            print("Error loading book data from file.")
+
+
+library: LibraryManager = LibraryManager()
+print(library.books)
+library.load_books()
+
+for book in library.books:
+    print(book.display_info())
