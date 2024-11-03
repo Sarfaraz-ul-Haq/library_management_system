@@ -58,6 +58,10 @@ class LibraryManager:
     _total_books: int = 0
     _total_users: int = 0
 
+    def __init__(self) -> None:
+        self.books: List[Book] = self.load_books()
+        self.users: List[User] = self.load_users()
+
     @classmethod
     def increment_total_books(cls) -> None:
         cls._total_books += 1
@@ -216,4 +220,4 @@ class LibraryManager:
         print("All changes have been saved successfully to the text files.")
 
 
-library: LibraryManager = LibraryManager()
+# library: LibraryManager = LibraryManager()
