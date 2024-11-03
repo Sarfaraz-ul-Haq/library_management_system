@@ -55,11 +55,35 @@ class Member(User):
 
 
 class LibraryManager:
-    _total_books: List[Book] = 0
-    _total_users: List[User] = 0
+    _total_books: int = 0
+    _total_users: int = 0
 
     @classmethod
-    def get_total_books(cls):
+    def increment_total_books(cls) -> None:
+        cls._total_books += 1
+
+    @classmethod
+    def decrement_total_books(cls) -> None:
+        cls._total_books -= 1
+
+    @classmethod
+    def increment_total_users(cls) -> None:
+        cls._total_users += 1
+
+    @classmethod
+    def decrement_total_users(cls) -> None:
+        cls._total_users -= 1
+
+    @classmethod
+    def get_total_books(cls) -> None:
+        print(cls._total_books)
+
+    @classmethod
+    def get_total_users(cls) -> None:
+        print(cls._total_users)
+
+    @classmethod
+    def get_total_books(cls) -> None:
         print(cls.total_books)
 
     def add_book(self, book: Book) -> None:
