@@ -110,6 +110,31 @@ class LibraryManager:
                 return
         print(f"Book ID {book_id} not found.")
 
+    def add_user(self, user: User) -> None:
+        self.users.append(user)
+        print(f"User '{user.name}' added successfully.")
+
+    def delete_user(self, user_id: str) -> None:
+        for user in self.users:
+            if user.user_id == user_id:
+                self.users.remove(user)
+                print(f"User ID {user_id} deleted successfully.")
+                return
+        print(f"User ID {user_id} not found.")
+
+    def update_user(
+        self, user_id: str, name: Optional[str], email: Optional[str]
+    ) -> None:
+        for user in self.users:
+            if user.user_id == user_id:
+                if name:
+                    user.name = name
+                if email:
+                    user.email = email
+                print(f"User ID {user_id} updated successfully.")
+                return
+        print(f"User ID {user_id} not found.")
+
     def save_books(self):
         try:
             with open("books.txt", "w") as file:
