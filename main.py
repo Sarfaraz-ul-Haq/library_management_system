@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 
 class Book:
@@ -70,6 +70,21 @@ class LibraryManager:
     def __init__(self) -> None:
         self.books: List[Book] = self.load_books()
         self.users: List[User] = self.load_users()
+
+    def add_book(self, book: Book) -> None:
+        self.books.append(book)
+
+    def update_book(self, book_id: int, title: Optional[str], author: Optional[str]):
+        for book in self.books:
+            if book.book_id == book_id:
+                if title:
+                    book.title = title
+                if author:
+                    book.author = author
+                self.save_books()
+                print(f"Book ID {book_id} updated successfully.")
+                return
+        print(f"Book ID {book_id} not found.")
 
     # def update_book() -> None:
     #     pass
