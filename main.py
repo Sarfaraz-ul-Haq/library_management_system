@@ -67,23 +67,22 @@ class LibraryManager:
     def add_book(self, book: Book) -> None:
         self.books.append(book)
 
-    def update_book(self, book_id: int, title: Optional[str], author: Optional[str]):
+    def update_book(self, book_id: str, title: Optional[str], author: Optional[str]):
         for book in self.books:
             if book.book_id == book_id:
                 if title:
                     book.title = title
                 if author:
                     book.author = author
-                self.save_books()
                 print(f"Book ID {book_id} updated successfully.")
                 return
         print(f"Book ID {book_id} not found.")
 
-    def delete_book(self, book_id: str) -> None:
+    def delete_book(self, book_id: str):
         for book in self.books:
             if book.book_id == book_id:
                 self.books.remove(book)
-                self.save_books()
+                Book.total_books -= 1
                 print(f"Book ID {book_id} deleted successfully.")
                 return
 
@@ -143,6 +142,11 @@ class LibraryManager:
             print("Error loading user data from file.")
 
         return users
+
+    def save_all_data_to_txt_files(self):
+        self.save_books()
+        self.save_users()
+        print("All changes have been saved successfully to the text files.")
 
 
 library: LibraryManager = LibraryManager()
