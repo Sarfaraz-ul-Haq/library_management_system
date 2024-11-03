@@ -5,7 +5,7 @@ class Book:
     total_books: int = 0
 
     def __init__(self, book_id: int, title: str, author: str) -> None:
-        self.book_id: int = book_id
+        self.book_id: str = book_id
         self.title: str = title
         self.author: str = author
         self.available: bool = True
@@ -137,16 +137,19 @@ class LibraryManager:
             print("Error saving user data to file.")
 
     def load_users(self):
+        users: List[User] = []
         try:
             with open("users.txt", "r") as file:
                 for line in file:
                     user_id, name, email, user_type = line.strip().split(",")
                     if user_type == "Librarian":
-                        self.users.append(Librarian(user_id, name, email))
+                        users.append(Librarian(user_id, name, email))
                     elif user_type == "Member":
-                        self.users.append(Member(user_id, name, email))
+                        users.append(Member(user_id, name, email))
         except OSError:
             print("Error loading user data from file.")
+
+        return users
 
 
 library: LibraryManager = LibraryManager()
