@@ -4,7 +4,7 @@ from typing import List, Optional
 class Book:
     total_books: int = 0
 
-    def __init__(self, book_id: str, title: str, author: str) -> None:
+    def __init__(self, book_id: int, title: str, author: str) -> None:
         self.book_id: str = book_id
         self.title: str = title
         self.author: str = author
@@ -56,8 +56,8 @@ class Librarian(User):
     ) -> None:
         library_manager.update_book(book_id, title, author)
 
-    def delete_book() -> None:
-        pass
+    def delete_book(self, book_id: str, library_manager: "LibraryManager") -> None:
+        library_manager.delete_book(book_id)
 
 
 class Member(User):
@@ -91,11 +91,13 @@ class LibraryManager:
                 return
         print(f"Book ID {book_id} not found.")
 
-    # def update_book() -> None:
-    #     pass
-
-    # def delete_book() -> None:
-    #     pass
+    def delete_book(self, book_id: str) -> None:
+        for book in self.books:
+            if book.book_id == book_id:
+                self.books.remove(book)
+                self.save_books()
+                print(f"Book ID {book_id} deleted successfully.")
+                return
 
     # def borrow_book() -> None:
     #     pass
