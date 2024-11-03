@@ -2,11 +2,14 @@ from typing import List
 
 
 class Book:
+    total_books: int = 0
+
     def __init__(self, book_id: int, title: str, author: str) -> None:
         self.book_id: int = book_id
         self.title: str = title
         self.author: str = author
         self.available: bool = True
+        Book.total_books += 1
 
     def display_info(self) -> None:
         print(f"Book ID: {self.book_id}")
@@ -25,6 +28,10 @@ class Book:
 
     def display_available(self) -> None:
         print(self.available)
+
+    @classmethod
+    def get_total_books(cls):
+        print(cls.total_books)
 
 
 class User:
