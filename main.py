@@ -16,18 +16,6 @@ class Book:
         print(f"Author: {self.author}")
         print(f"Available: {self.available}\n")
 
-    def display_book_id(self) -> None:
-        print(self.book_id)
-
-    def display_title(self) -> None:
-        print(self.title)
-
-    def display_author(self) -> None:
-        print(self.author)
-
-    def display_available(self) -> None:
-        print(self.available)
-
     @classmethod
     def get_total_books(cls):
         print(cls.total_books)
@@ -99,8 +87,8 @@ class LibraryManager:
                 print(f"Book ID {book_id} deleted successfully.")
                 return
 
-    # def borrow_book() -> None:
-    #     pass
+    def borrow_book() -> None:
+        pass
 
     # def return_book() -> None:
     #     pass
