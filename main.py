@@ -2,23 +2,18 @@ from typing import List, Optional
 
 
 class Book:
-    total_books: int = 0
-
-    def __init__(self, book_id: int, title: str, author: str) -> None:
+    def __init__(self, book_id: str, title: str, author: str) -> None:
         self.book_id: str = book_id
         self.title: str = title
         self.author: str = author
         self.available: bool = True
+        self.borrowed_books: List[str] = []
 
     def display_info(self) -> None:
         print(f"Book ID: {self.book_id}")
         print(f"Title: {self.title}")
         print(f"Author: {self.author}")
         print(f"Available: {self.available}\n")
-
-    @classmethod
-    def get_total_books(cls):
-        print(cls.total_books)
 
 
 class User:
@@ -52,17 +47,23 @@ class Member(User):
     def __init__(self, user_id: str, name: str, email: str) -> None:
         super().__init__(user_id, name, email)
 
-    def borrow_book() -> None:
-        pass
+    def borrow_book(self, library_manager: "LibraryManager", book_id: str) -> None:
+        library_manager.borrow_book(book_id)
 
-    def return_book() -> None:
-        pass
+    def return_book(self, library_manager: "LibraryManager", book_id: str) -> None:
+        library_manager.return_book(book_id)
 
 
 class LibraryManager:
+    total_books: int = 0
+
     def __init__(self) -> None:
         self.books: List[Book] = self.load_books()
         self.users: List[User] = self.load_users()
+
+    @classmethod
+    def get_total_books(cls):
+        print(cls.total_books)
 
     def add_book(self, book: Book) -> None:
         self.books.append(book)
@@ -86,11 +87,28 @@ class LibraryManager:
                 print(f"Book ID {book_id} deleted successfully.")
                 return
 
-    def borrow_book() -> None:
-        pass
+    def borrow_book(self, member: Member, book_id: str):
+        for book in self.books:
+            if book.book_id == book_id and book.available:
+                book.available = False
+                member.borrowed_books.append(book_id)
+                print(
+                    f"Book '{book.title}' borrowed successfully by Member '{member.name}'."
+                )
+                return
+        print(f"Book ID {book_id} is not available.")
 
-    # def return_book() -> None:
-    #     pass
+    def return_book(self, member: Member, book_id: str) -> None:
+        for book in self.books:
+            if book.book_id == book_id:
+                if not book.available:
+                    book.available = True
+                    member.borrowed_books.remove(book_id)
+                    print(f"Book '{book.title}' returned successfully.")
+                else:
+                    print(f"Book ID {book_id} is not currently borrowed.")
+                return
+        print(f"Book ID {book_id} not found.")
 
     def save_books(self):
         try:
@@ -150,8 +168,3 @@ class LibraryManager:
 
 
 library: LibraryManager = LibraryManager()
-# print(library.books)
-# library.load_books()
-
-for book in library.books:
-    book.display_info()
