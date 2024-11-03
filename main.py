@@ -55,11 +55,8 @@ class Member(User):
 
 
 class LibraryManager:
-    _total_books: int = 0
-
-    def __init__(self) -> None:
-        self.books: List[Book] = self.load_books()
-        self.users: List[User] = self.load_users()
+    _total_books: List[Book] = 0
+    _total_users: List[User] = 0
 
     @classmethod
     def get_total_books(cls):
@@ -154,7 +151,6 @@ class LibraryManager:
                     books.append(Book(book_id, title, author))
         except OSError:
             print("Error loading book data from file.")
-        Book.total_books = len(books)
 
         return books
 
