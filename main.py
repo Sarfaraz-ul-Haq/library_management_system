@@ -3,15 +3,15 @@ from typing import List, Optional
 
 class Book:
     def __init__(self, book_id: str, title: str, author: str) -> None:
-        self.book_id: str = book_id
-        self.title: str = title
-        self.author: str = author
+        self._book_id: str = book_id
+        self._title: str = title
+        self._author: str = author
         self.available: bool = True
 
     def display_info(self) -> None:
-        print(f"Book ID: {self.book_id}")
-        print(f"Title: {self.title}")
-        print(f"Author: {self.author}")
+        print(f"Book ID: {self._book_id}")
+        print(f"Title: {self._title}")
+        print(f"Author: {self._author}")
         print(f"Available: {self.available}\n")
 
 
@@ -26,13 +26,13 @@ class Librarian(User):
     def __init__(self, user_id: str, name: str, email: str) -> None:
         super().__init__(user_id, name, email)
 
-    def add_book(self, book: Book, library_manager) -> None:
+    def add_book(self, book: Book, library_manager: "LibraryManager") -> None:
         library_manager.add_book(book)
 
     def update_book(
         self,
         library_manager: "LibraryManager",
-        book_id: Optional[int],
+        book_id: Optional[str],
         title: Optional[str],
         author: Optional[str],
     ) -> None:
@@ -86,64 +86,73 @@ class LibraryManager:
     def get_total_users(cls) -> None:
         print(cls._total_users)
 
-    @classmethod
-    def get_total_books(cls) -> None:
-        print(cls.total_books)
-
     def add_book(self, book: Book) -> None:
         self.books.append(book)
+        LibraryManager.increment_total_books()
+        print(f"Book '{book._title}' added successfully.")
 
     def update_book(self, book_id: str, title: Optional[str], author: Optional[str]):
         for book in self.books:
-            if book.book_id == book_id:
+            if book._book_id == book_id:
                 if title:
-                    book.title = title
+                    book._title = title
                 if author:
-                    book.author = author
+                    book._author = author
                 print(f"Book ID {book_id} updated successfully.")
                 return
         print(f"Book ID {book_id} not found.")
 
     def delete_book(self, book_id: str):
         for book in self.books:
-            if book.book_id == book_id:
+            if book._book_id == book_id:
                 self.books.remove(book)
-                Book.total_books -= 1
+                LibraryManager.decrement_total_books()
                 print(f"Book ID {book_id} deleted successfully.")
                 return
 
     def borrow_book(self, member: Member, book_id: str):
         for book in self.books:
-            if book.book_id == book_id and book.available:
+            if book._book_id == book_id and book.available:
                 book.available = False
-                member.borrowed_books.append(book_id)
+                member.borrowed_books.append(book)
                 print(
-                    f"Book '{book.title}' borrowed successfully by Member '{member.name}'."
+                    f"Book '{book._title}' borrowed successfully by nember '{member.name}'."
                 )
                 return
         print(f"Book ID {book_id} is not available.")
 
     def return_book(self, member: Member, book_id: str) -> None:
         for book in self.books:
-            if book.book_id == book_id:
+            if book._book_id == book_id:
                 if not book.available:
                     book.available = True
-                    member.borrowed_books.remove(book_id)
-                    print(f"Book '{book.title}' returned successfully.")
+                    if book in member.borrowed_books:
+                        member.borrowed_books.remove(book)
+                        print(f"Book '{book._title}' returned successfully.")
+                    else:
+                        print(
+                            f"Book '{book._title}' is not borrowed by member '{member.name}'."
+                        )
+                    return
                 else:
                     print(f"Book ID {book_id} is not currently borrowed.")
-                return
+                    return
         print(f"Book ID {book_id} not found.")
 
     def add_user(self, user: User) -> None:
         self.users.append(user)
-        print(f"User '{user.name}' added successfully.")
+        LibraryManager.increment_total_users()
+        if isinstance(user, Librarian):
+            print(f"Librarian '{user.name}' added successfully.")
+        else:
+            print(f"Member '{user.name}' added successfully.")
 
     def delete_user(self, user_id: str) -> None:
         for user in self.users:
             if user.user_id == user_id:
                 self.users.remove(user)
                 print(f"User ID {user_id} deleted successfully.")
+                LibraryManager.decrement_total_users()
                 return
         print(f"User ID {user_id} not found.")
 
@@ -165,7 +174,7 @@ class LibraryManager:
             with open("books.txt", "w") as file:
                 for book in self.books:
                     file.write(
-                        f"{book.book_id},{book.title},{book.author},{book.available}\n"
+                        f"{book._book_id},{book._title},{book._author},{book.available}\n"
                     )
         except OSError:
             print("Error saving book data to file.")
@@ -220,4 +229,26 @@ class LibraryManager:
         print("All changes have been saved successfully to the text files.")
 
 
-# library: LibraryManager = LibraryManager()
+library_manager = LibraryManager()
+
+librarian = Librarian("librarian001", "Hamzah", "hamzah@example.com")
+library_manager.add_user(librarian)
+
+member1 = Member("member001", "Haseeb", "haseeb@example.com")
+library_manager.add_user(member1)
+
+member2 = Member("member002", "Ali", "ali@example.com")
+library_manager.add_user(member2)
+
+book1 = Book("book001", "Nahj ul Balagha", "Ali ibn Abi Talib")
+librarian.add_book(book1, library_manager)
+
+
+member1.borrow_book(library_manager, "book001")
+
+member2.borrow_book(library_manager, "book001")
+
+member1.return_book(library_manager, "book001")
+
+
+library_manager.save_all_data_to_txt_files()
