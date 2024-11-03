@@ -12,7 +12,7 @@ class Book:
         print(f"Book ID: {self.book_id}")
         print(f"Title: {self.title}")
         print(f"Author: {self.author}")
-        print(f"Available: {self.available}")
+        print(f"Available: {self.available}\n")
 
     def display_book_id(self) -> None:
         print(self.book_id)
@@ -61,10 +61,8 @@ class Member(User):
 
 class LibraryManager:
     def __init__(self) -> None:
-        self.books: List[Book] = []
-        self.users: List[User] = []
-        # self.load_books()
-        # self.load_users()
+        self.books: List[Book] = self.load_books()
+        self.users: List[User] = self.load_users()
 
     # def update_book() -> None:
     #     pass
@@ -78,19 +76,54 @@ class LibraryManager:
     # def return_book() -> None:
     #     pass
 
+    def save_books(self):
+        try:
+            with open("books.txt", "w") as file:
+                for book in self.books:
+                    file.write(
+                        f"{book.book_id},{book.title},{book.author},{book.available}"
+                    )
+        except OSError:
+            print("Error saving book data to file.")
+
     def load_books(self):
+        books: List[Book] = []
         try:
             with open("books.txt", "r") as file:
                 for line in file:
                     book_id, title, author, available = line.strip().split(",")
-                    self.books.append(Book(book_id, title, author))
+                    books.append(Book(book_id, title, author))
         except OSError:
             print("Error loading book data from file.")
+        return books
+
+    def save_users(self):
+        try:
+            with open("users.txt", "w") as file:
+                for user in self.users:
+                    if isinstance(user, Librarian):
+                        file.write(f"{user.user_id},{user.name},{user.email},Librarian")
+                    else:
+                        file.write(f"{user.user_id},{user.name},{user.email},Member")
+        except OSError:
+            print("Error saving user data to file.")
+
+    def load_users(self):
+        try:
+            with open("users.txt", "r") as file:
+                for line in file:
+                    user_id, name, email, user_type = line.strip().split(",")
+                    if user_type == "Librarian":
+                        self.users.append(Librarian(user_id, name, email))
+                    elif user_type == "Member":
+                        self.users.append(Member(user_id, name, email))
+        except OSError:
+            print("Error loading user data from file.")
 
 
 library: LibraryManager = LibraryManager()
-print(library.books)
-library.load_books()
+# print(library.books)
+# library.load_books()
 
 for book in library.books:
-    print(book.display_info())
+    book.display_info()
