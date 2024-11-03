@@ -4,12 +4,11 @@ from typing import List, Optional
 class Book:
     total_books: int = 0
 
-    def __init__(self, book_id: int, title: str, author: str) -> None:
+    def __init__(self, book_id: str, title: str, author: str) -> None:
         self.book_id: str = book_id
         self.title: str = title
         self.author: str = author
         self.available: bool = True
-        Book.total_books += 1
 
     def display_info(self) -> None:
         print(f"Book ID: {self.book_id}")
@@ -109,7 +108,7 @@ class LibraryManager:
             with open("books.txt", "w") as file:
                 for book in self.books:
                     file.write(
-                        f"{book.book_id},{book.title},{book.author},{book.available}"
+                        f"{book.book_id},{book.title},{book.author},{book.available}\n"
                     )
         except OSError:
             print("Error saving book data to file.")
@@ -123,6 +122,8 @@ class LibraryManager:
                     books.append(Book(book_id, title, author))
         except OSError:
             print("Error loading book data from file.")
+        Book.total_books = len(books)
+
         return books
 
     def save_users(self):
@@ -130,9 +131,11 @@ class LibraryManager:
             with open("users.txt", "w") as file:
                 for user in self.users:
                     if isinstance(user, Librarian):
-                        file.write(f"{user.user_id},{user.name},{user.email},Librarian")
+                        file.write(
+                            f"{user.user_id},{user.name},{user.email},Librarian\n"
+                        )
                     else:
-                        file.write(f"{user.user_id},{user.name},{user.email},Member")
+                        file.write(f"{user.user_id},{user.name},{user.email},Member\n")
         except OSError:
             print("Error saving user data to file.")
 
