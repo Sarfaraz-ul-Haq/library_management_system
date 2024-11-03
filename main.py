@@ -176,6 +176,8 @@ class LibraryManager:
         except OSError:
             print("Error loading book data from file.")
 
+        LibraryManager._total_books = len(books)
+
         return books
 
     def save_users(self):
@@ -203,6 +205,8 @@ class LibraryManager:
                         users.append(Member(user_id, name, email))
         except OSError:
             print("Error loading user data from file.")
+
+        LibraryManager._total_users = len(users)
 
         return users
 
