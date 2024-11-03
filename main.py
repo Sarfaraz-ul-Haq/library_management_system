@@ -7,7 +7,6 @@ class Book:
         self.title: str = title
         self.author: str = author
         self.available: bool = True
-        self.borrowed_books: List[str] = []
 
     def display_info(self) -> None:
         print(f"Book ID: {self.book_id}")
@@ -46,16 +45,17 @@ class Librarian(User):
 class Member(User):
     def __init__(self, user_id: str, name: str, email: str) -> None:
         super().__init__(user_id, name, email)
+        self.borrowed_books: List[str] = []
 
     def borrow_book(self, library_manager: "LibraryManager", book_id: str) -> None:
-        library_manager.borrow_book(book_id)
+        library_manager.borrow_book(self, book_id)
 
     def return_book(self, library_manager: "LibraryManager", book_id: str) -> None:
-        library_manager.return_book(book_id)
+        library_manager.return_book(self, book_id)
 
 
 class LibraryManager:
-    total_books: int = 0
+    _total_books: int = 0
 
     def __init__(self) -> None:
         self.books: List[Book] = self.load_books()
