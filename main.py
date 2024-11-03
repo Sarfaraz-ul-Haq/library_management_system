@@ -45,11 +45,17 @@ class Librarian(User):
     def __init__(self, user_id: str, name: str, email: str) -> None:
         super().__init__(user_id, name, email)
 
-    def add_book() -> None:
-        pass
+    def add_book(self, book: Book, library_manager) -> None:
+        library_manager.add_book(book)
 
-    def update_book() -> None:
-        pass
+    def update_book(
+        self,
+        library_manager: "LibraryManager",
+        book_id: Optional[int],
+        title: Optional[str],
+        author: Optional[str],
+    ) -> None:
+        library_manager.update_book(book_id, title, author)
 
     def delete_book() -> None:
         pass
