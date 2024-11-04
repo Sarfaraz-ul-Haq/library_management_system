@@ -158,7 +158,7 @@ class LibraryManager:
                 book.available = False
                 member.add_borrowed_book(book)
                 print(
-                    f"Book '{book.title}' borrowed successfully by nember '{member.name}'."
+                    f"Book '{book.title}' borrowed successfully by member '{member.name}'."
                 )
                 return
         print(f"Book ID {book_id} is not available.")
