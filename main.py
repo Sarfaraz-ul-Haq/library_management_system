@@ -6,13 +6,29 @@ class Book:
         self._book_id: str = book_id
         self._title: str = title
         self._author: str = author
-        self.available: bool = True
+        self._available: bool = True
 
     def display_info(self) -> None:
         print(f"Book ID: {self._book_id}")
         print(f"Title: {self._title}")
         print(f"Author: {self._author}")
         print(f"Available: {self.available}\n")
+
+    @property
+    def book_id(self) -> str:
+        return self._book_id
+
+    @property
+    def title(self) -> str:
+        return self._title
+
+    @property
+    def author(self) -> str:
+        return self._author
+
+    @property
+    def available(self) -> bool:
+        return self._available
 
 
 class User:
@@ -80,11 +96,11 @@ class LibraryManager:
 
     @classmethod
     def get_total_books(cls) -> None:
-        print(cls._total_books)
+        return cls._total_books
 
     @classmethod
     def get_total_users(cls) -> None:
-        print(cls._total_users)
+        return cls._total_users
 
     def add_book(self, book: Book) -> None:
         self.books.append(book)
@@ -174,7 +190,7 @@ class LibraryManager:
             with open("books.txt", "w") as file:
                 for book in self.books:
                     file.write(
-                        f"{book._book_id},{book._title},{book._author},{book.available}\n"
+                        f"{book._book_id},{book._title},{book._author},{book._available}\n"
                     )
         except OSError:
             print("Error saving book data to file.")
