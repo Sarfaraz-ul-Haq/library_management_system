@@ -2,17 +2,17 @@ from typing import List, Optional
 
 
 class Book:
-    def __init__(self, book_id: str, title: str, author: str) -> None:
+    def __init__(self, book_id: str, title: str, author: str, available: bool) -> None:
         self._book_id: str = book_id
         self._title: str = title
         self._author: str = author
-        self._available: bool = True
+        self._available: bool = available
 
     def display_info(self) -> None:
         print(f"Book ID: {self._book_id}")
         print(f"Title: {self._title}")
         print(f"Author: {self._author}")
-        print(f"Available: {self._available}\n")
+        print(f"{'Available' if self._available else 'Not Available'}")
 
     @property
     def book_id(self) -> str:
@@ -73,7 +73,17 @@ class Librarian(User):
 class Member(User):
     def __init__(self, user_id: str, name: str, email: str) -> None:
         super().__init__(user_id, name, email)
-        self.borrowed_books: List[str] = []
+        self._borrowed_books: List[Book] = []
+
+    @property
+    def borrowed_books(self) -> List[Book]:
+        return self._borrowed_books
+
+    def add_borrowed_book(self, book: Book) -> None:
+        self._borrowed_books.append(book)
+
+    def remove_borrowed_book(self, book: Book) -> None:
+        self._borrowed_books.remove(book)
 
     def borrow_book(self, library_manager: "LibraryManager", book_id: str) -> None:
         library_manager.borrow_book(self, book_id)
@@ -89,6 +99,8 @@ class LibraryManager:
     def __init__(self) -> None:
         self.books: List[Book] = self.load_books()
         self.users: List[User] = self.load_users()
+        LibraryManager._total_books = len(self.books)
+        LibraryManager._total_users = len(self.users)
 
     @classmethod
     def get_total_books(cls) -> int:
@@ -142,7 +154,7 @@ class LibraryManager:
         for book in self.books:
             if book.book_id == book_id and book.available:
                 book.available = False
-                member.borrowed_books.append(book)
+                member.add_borrowed_book(book)
                 print(
                     f"Book '{book.title}' borrowed successfully by nember '{member.name}'."
                 )
@@ -155,7 +167,7 @@ class LibraryManager:
                 if not book.available:
                     book.available = True
                     if book in member.borrowed_books:
-                        member.borrowed_books.remove(book)
+                        member.remove_borrowed_book(book)
                         print(f"Book '{book.title}' returned successfully.")
                     else:
                         print(
@@ -204,7 +216,7 @@ class LibraryManager:
             with open("books.txt", "w") as file:
                 for book in self.books:
                     file.write(
-                        f"{book._book_id},{book._title},{book._author},{book.available}\n"
+                        f"{book.book_id},{book.title},{book.author},{book.available}\n"
                     )
         except OSError:
             print("Error saving book data to file.")
@@ -215,7 +227,11 @@ class LibraryManager:
             with open("books.txt", "r") as file:
                 for line in file:
                     book_id, title, author, available = line.strip().split(",")
-                    books.append(Book(book_id, title, author))
+                    if available == "True":
+                        available_bool = True
+                    else:
+                        available_bool = False
+                    books.append(Book(book_id, title, author, available_bool))
         except OSError:
             print("Error loading book data from file.")
 
@@ -260,6 +276,12 @@ class LibraryManager:
 
 
 library_manager = LibraryManager()
+
+for book in library_manager.books:
+    book.display_info()
+
+library_manager.get_total_books()
+library_manager.get_total_users()
 
 librarian = Librarian("librarian001", "Hamzah", "hamzah@example.com")
 library_manager.add_user(librarian)
