@@ -182,6 +182,12 @@ class LibraryManager:
         print(f"Book ID {book_id} not found.")
 
     def add_user(self, user: User) -> None:
+        for existing_user in self.users:
+            if existing_user.user_id == user.user_id:
+                print(
+                    f"User with ID {user.user_id} already exists. Cannot add duplicate."
+                )
+                return
         self.users.append(user)
 
         if isinstance(user, Librarian):
@@ -282,8 +288,8 @@ library_manager = LibraryManager()
 for book in library_manager.books:
     book.display_info()
 
-library_manager.get_total_books()
-library_manager.get_total_users()
+print(f"Total Books: {library_manager.get_total_books()}")
+print(f"Total Users: {library_manager.get_total_users()}")
 
 librarian = Librarian("librarian001", "Hamzah", "hamzah@example.com")
 library_manager.add_user(librarian)
