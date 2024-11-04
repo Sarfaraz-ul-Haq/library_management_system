@@ -14,7 +14,7 @@ class Book:
         print(f"Book ID: {self._book_id}")
         print(f"Title: {self._title}")
         print(f"Author: {self._author}")
-        print(f"{'Available' if self._available else 'Not Available'}")
+        print(f"{'Book is available' if self._available else 'Book is not Available'}")
 
     @property
     def book_id(self) -> str:
@@ -131,14 +131,14 @@ class LibraryManager:
     def add_book(self, book: Book) -> None:
         self.books.append(book)
         LibraryManager.increment_total_books()
-        print(f"Book '{book.title}' added successfully.")
+        print(f"Book '{book.title}' added successfully.\n")
 
     def delete_book(self, book_id: str):
         for book in self.books:
             if book.book_id == book_id:
                 self.books.remove(book)
                 LibraryManager.decrement_total_books()
-                print(f"Book ID {book_id} deleted successfully.")
+                print(f"Book ID {book_id} deleted successfully.\n")
                 return
 
     def update_book(self, book_id: str, title: Optional[str], author: Optional[str]):
@@ -148,9 +148,9 @@ class LibraryManager:
                     book.title = title
                 if author:
                     book.author = author
-                print(f"Book ID {book_id} updated successfully.")
+                print(f"Book ID {book_id} updated successfully.\n")
                 return
-        print(f"Book ID {book_id} not found.")
+        print(f"Book ID {book_id} not found.\n")
 
     def borrow_book(self, member: Member, book_id: str):
         for book in self.books:
@@ -158,10 +158,10 @@ class LibraryManager:
                 book.available = False
                 member.add_borrowed_book(book)
                 print(
-                    f"Book '{book.title}' borrowed successfully by member '{member.name}'."
+                    f"Book '{book.title}' borrowed successfully by member '{member.name}'.\n"
                 )
                 return
-        print(f"Book ID {book_id} is not available.")
+        print(f"Book ID {book_id} is not available.\n")
 
     def return_book(self, member: Member, book_id: str) -> None:
         for book in self.books:
@@ -170,30 +170,30 @@ class LibraryManager:
                     book.available = True
                     if book in member.borrowed_books:
                         member.remove_borrowed_book(book)
-                        print(f"Book '{book.title}' returned successfully.")
+                        print(f"Book '{book.title}' returned successfully.\n")
                     else:
                         print(
-                            f"Book '{book.title}' is not borrowed by member '{member.name}'."
+                            f"Book '{book.title}' is not borrowed by member '{member.name}'.\n"
                         )
                     return
                 else:
-                    print(f"Book ID {book_id} is not currently borrowed.")
+                    print(f"Book ID {book_id} is not currently borrowed.\n")
                     return
-        print(f"Book ID {book_id} not found.")
+        print(f"Book ID {book_id} not found.\n")
 
     def add_user(self, user: User) -> None:
         for existing_user in self.users:
             if existing_user.user_id == user.user_id:
                 print(
-                    f"User with ID {user.user_id} already exists. Cannot add duplicate."
+                    f"User with ID {user.user_id} already exists. Cannot add duplicate.\n"
                 )
                 return
         self.users.append(user)
 
         if isinstance(user, Librarian):
-            print(f"Librarian '{user.name}' added successfully.")
+            print(f"Librarian '{user.name}' added successfully.\n")
         else:
-            print(f"Member '{user.name}' added successfully.")
+            print(f"Member '{user.name}' added successfully.\n")
 
         LibraryManager.increment_total_users()
 
@@ -201,10 +201,10 @@ class LibraryManager:
         for user in self.users:
             if user.user_id == user_id:
                 self.users.remove(user)
-                print(f"User ID {user_id} deleted successfully.")
+                print(f"User ID {user_id} deleted successfully.\n")
                 LibraryManager.decrement_total_users()
                 return
-        print(f"User ID {user_id} not found.")
+        print(f"User ID {user_id} not found.\n")
 
     def update_user(
         self, user_id: str, name: Optional[str], email: Optional[str]
@@ -215,9 +215,9 @@ class LibraryManager:
                     user.name = name
                 if email:
                     user.email = email
-                print(f"User ID {user_id} updated successfully.")
+                print(f"User ID {user_id} updated successfully.\n")
                 return
-        print(f"User ID {user_id} not found.")
+        print(f"User ID {user_id} not found.\n")
 
     def save_books(self):
         try:
@@ -227,7 +227,7 @@ class LibraryManager:
                         f"{book.book_id},{book.title},{book.author},{book.available}\n"
                     )
         except OSError:
-            print("Error saving book data to file.")
+            print("Error saving book data to file.\n")
 
     def load_books(self):
         books: List[Book] = []
@@ -241,7 +241,7 @@ class LibraryManager:
                         available_bool = False
                     books.append(Book(book_id, title, author, available_bool))
         except OSError:
-            print("Error loading book data from file.")
+            print("Error loading book data from file.\n")
 
         LibraryManager._total_books = len(books)
 
@@ -258,7 +258,7 @@ class LibraryManager:
                     else:
                         file.write(f"{user.user_id},{user.name},{user.email},Member\n")
         except OSError:
-            print("Error saving user data to file.")
+            print("Error saving user data to file.\n")
 
     def load_users(self):
         users: List[User] = []
@@ -271,7 +271,7 @@ class LibraryManager:
                     elif user_type == "Member":
                         users.append(Member(user_id, name, email))
         except OSError:
-            print("Error loading user data from file.")
+            print("Error loading user data from file.\n")
 
         LibraryManager._total_users = len(users)
 
@@ -280,29 +280,32 @@ class LibraryManager:
     def save_all_data_to_txt_files(self):
         self.save_books()
         self.save_users()
-        print("All changes have been saved successfully to the text files.")
+        print("All changes have been saved successfully to the text files.\n")
 
 
 library_manager = LibraryManager()
 
-for book in library_manager.books:
-    book.display_info()
 
-print(f"Total Books: {library_manager.get_total_books()}")
-print(f"Total Users: {library_manager.get_total_users()}")
-
-librarian = Librarian("librarian001", "Hamzah", "hamzah@example.com")
+librarian = Librarian("lib001", "Ali", "ali@example.com")
 library_manager.add_user(librarian)
 
-member1 = Member("member001", "Haseeb", "haseeb@example.com")
+member1 = Member("mem001", "Hamzah", "hamzah@example.com")
 library_manager.add_user(member1)
 
-member2 = Member("member002", "Ali", "ali@example.com")
+member2 = Member("mem002", "Haseeb", "haseeb@example.com")
 library_manager.add_user(member2)
+
 
 book1 = Book("book001", "Nahj ul Balagha", "Ali ibn Abi Talib")
 librarian.add_book(book1, library_manager)
 
+book2 = Book("book002", "The Great Gatsby", "F. Scott Fitzgerald")
+librarian.add_book(book2, library_manager)
+
+
+print("Available Books")
+for book in library_manager.books:
+    book.display_info()
 
 member1.borrow_book(library_manager, "book001")
 
@@ -310,5 +313,6 @@ member2.borrow_book(library_manager, "book001")
 
 member1.return_book(library_manager, "book001")
 
+member2.borrow_book(library_manager, "book001")
 
 library_manager.save_all_data_to_txt_files()
