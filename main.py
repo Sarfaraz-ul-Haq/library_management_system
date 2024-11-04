@@ -2,7 +2,9 @@ from typing import List, Optional
 
 
 class Book:
-    def __init__(self, book_id: str, title: str, author: str, available: bool) -> None:
+    def __init__(
+        self, book_id: str, title: str, author: str, available: bool = True
+    ) -> None:
         self._book_id: str = book_id
         self._title: str = title
         self._author: str = author
