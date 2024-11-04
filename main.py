@@ -22,9 +22,17 @@ class Book:
     def title(self) -> str:
         return self._title
 
+    @title.setter
+    def title(self, value: str) -> None:
+        self._title = value
+
     @property
     def author(self) -> str:
         return self._author
+
+    @author.setter
+    def author(self, value: str) -> None:
+        self._author = value
 
     @property
     def available(self) -> bool:
@@ -75,40 +83,13 @@ class Member(User):
 
 
 class LibraryManager:
-    _total_books: int = 0
-    _total_users: int = 0
-
     def __init__(self) -> None:
         self.books: List[Book] = self.load_books()
         self.users: List[User] = self.load_users()
 
-    @classmethod
-    def increment_total_books(cls) -> None:
-        cls._total_books += 1
-
-    @classmethod
-    def decrement_total_books(cls) -> None:
-        cls._total_books -= 1
-
-    @classmethod
-    def increment_total_users(cls) -> None:
-        cls._total_users += 1
-
-    @classmethod
-    def decrement_total_users(cls) -> None:
-        cls._total_users -= 1
-
-    @classmethod
-    def get_total_books(cls) -> None:
-        return cls._total_books
-
-    @classmethod
-    def get_total_users(cls) -> None:
-        return cls._total_users
-
     def add_book(self, book: Book) -> None:
         self.books.append(book)
-        LibraryManager.increment_total_books()
+
         print(f"Book '{book.title}' added successfully.")
 
     def update_book(self, book_id: str, title: Optional[str], author: Optional[str]):
@@ -126,7 +107,7 @@ class LibraryManager:
         for book in self.books:
             if book.book_id == book_id:
                 self.books.remove(book)
-                LibraryManager.decrement_total_books()
+
                 print(f"Book ID {book_id} deleted successfully.")
                 return
 
@@ -161,7 +142,7 @@ class LibraryManager:
 
     def add_user(self, user: User) -> None:
         self.users.append(user)
-        LibraryManager.increment_total_users()
+
         if isinstance(user, Librarian):
             print(f"Librarian '{user.name}' added successfully.")
         else:
@@ -172,7 +153,7 @@ class LibraryManager:
             if user.user_id == user_id:
                 self.users.remove(user)
                 print(f"User ID {user_id} deleted successfully.")
-                LibraryManager.decrement_total_users()
+
                 return
         print(f"User ID {user_id} not found.")
 
