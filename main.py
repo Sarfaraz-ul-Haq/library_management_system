@@ -12,7 +12,7 @@ class Book:
         print(f"Book ID: {self._book_id}")
         print(f"Title: {self._title}")
         print(f"Author: {self._author}")
-        print(f"Available: {self.available}\n")
+        print(f"Available: {self._available}\n")
 
     @property
     def book_id(self) -> str:
@@ -29,6 +29,10 @@ class Book:
     @property
     def available(self) -> bool:
         return self._available
+
+    @available.setter
+    def available(self, value: bool) -> None:
+        self._available = value
 
 
 class User:
@@ -105,22 +109,22 @@ class LibraryManager:
     def add_book(self, book: Book) -> None:
         self.books.append(book)
         LibraryManager.increment_total_books()
-        print(f"Book '{book._title}' added successfully.")
+        print(f"Book '{book.title}' added successfully.")
 
     def update_book(self, book_id: str, title: Optional[str], author: Optional[str]):
         for book in self.books:
-            if book._book_id == book_id:
+            if book.book_id == book_id:
                 if title:
-                    book._title = title
+                    book.title = title
                 if author:
-                    book._author = author
+                    book.author = author
                 print(f"Book ID {book_id} updated successfully.")
                 return
         print(f"Book ID {book_id} not found.")
 
     def delete_book(self, book_id: str):
         for book in self.books:
-            if book._book_id == book_id:
+            if book.book_id == book_id:
                 self.books.remove(book)
                 LibraryManager.decrement_total_books()
                 print(f"Book ID {book_id} deleted successfully.")
@@ -128,26 +132,26 @@ class LibraryManager:
 
     def borrow_book(self, member: Member, book_id: str):
         for book in self.books:
-            if book._book_id == book_id and book.available:
+            if book.book_id == book_id and book.available:
                 book.available = False
                 member.borrowed_books.append(book)
                 print(
-                    f"Book '{book._title}' borrowed successfully by nember '{member.name}'."
+                    f"Book '{book.title}' borrowed successfully by nember '{member.name}'."
                 )
                 return
         print(f"Book ID {book_id} is not available.")
 
     def return_book(self, member: Member, book_id: str) -> None:
         for book in self.books:
-            if book._book_id == book_id:
+            if book.book_id == book_id:
                 if not book.available:
                     book.available = True
                     if book in member.borrowed_books:
                         member.borrowed_books.remove(book)
-                        print(f"Book '{book._title}' returned successfully.")
+                        print(f"Book '{book.title}' returned successfully.")
                     else:
                         print(
-                            f"Book '{book._title}' is not borrowed by member '{member.name}'."
+                            f"Book '{book.title}' is not borrowed by member '{member.name}'."
                         )
                     return
                 else:
@@ -190,7 +194,7 @@ class LibraryManager:
             with open("books.txt", "w") as file:
                 for book in self.books:
                     file.write(
-                        f"{book._book_id},{book._title},{book._author},{book._available}\n"
+                        f"{book._book_id},{book._title},{book._author},{book.available}\n"
                     )
         except OSError:
             print("Error saving book data to file.")
