@@ -47,9 +47,29 @@ class Book:
 
 class User:
     def __init__(self, user_id: str, name: str, email: str) -> None:
-        self.user_id: str = user_id
-        self.name: str = name
-        self.email: str = email
+        self._user_id: str = user_id
+        self._name: str = name
+        self._email: str = email
+
+    @property
+    def user_id(self) -> str:
+        return self._user_id
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @name.setter
+    def name(self, value: str) -> None:
+        self._name = value
+
+    @property
+    def email(self) -> str:
+        return self._email
+
+    @email.setter
+    def email(self, value: str) -> None:
+        self._email = value
 
 
 class Librarian(User):
