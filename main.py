@@ -166,9 +166,10 @@ class LibraryManager:
             if book.book_id == book_id:
                 if title:
                     book.title = title
+                    print(f"Book title {title} updated successfully.\n")
                 if author:
                     book.author = author
-                print(f"Book ID {book_id} updated successfully.\n")
+                    print(f"Book author {author} updated successfully.\n")
                 return
         print(f"Book ID {book_id} not found.\n")
 
